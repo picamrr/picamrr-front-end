@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "picamrr-frontend",
+    "slug": "picamrr-frontend",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "picamrr-frontend"
+}
