@@ -36,20 +36,19 @@ import Login from "./components/login/login";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-    return Login();
-    /*
+
     return (
         <NavigationContainer>
             <Stack.Navigator>
+                <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
                 <Stack.Screen
                     name="Home"
                     component={Home}
-                    options={{ title: 'Welcome to PICAMRR App' }}
                 />
                 <Stack.Screen name="ReservationForm" component={ReservationForm} />
             </Stack.Navigator>
         </NavigationContainer>
-    );*/
+    );
     //const theme = useTheme();
   //   const renderItem = ({ item }) => (
   //       <Card>

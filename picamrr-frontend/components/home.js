@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, route }) {
     const renderItem = ({ item }) => (
         <Card style={styles.card}>
             <Card.Title title = {item.name} subtitle ={item.stars + "⭐"} />
@@ -66,7 +66,7 @@ export default function Home({ navigation }) {
     return (
         <View  style={styles.container}>
             <FlatList
-                data={CARDS}
+                data={route.params.restaurants}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
             />
