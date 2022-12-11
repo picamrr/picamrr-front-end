@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import {StatusBar} from "expo-status-bar";
 import Home from "./components/home";
 import ReservationForm from "./components/ReservationForm";
+import Login from "./components/login/login";
 
 // const CARDS = [
 //     {
@@ -35,6 +36,8 @@ import ReservationForm from "./components/ReservationForm";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+    return Login();
+    /*
     return (
         <NavigationContainer>
             <Stack.Navigator>
@@ -46,7 +49,7 @@ export default function App() {
                 <Stack.Screen name="ReservationForm" component={ReservationForm} />
             </Stack.Navigator>
         </NavigationContainer>
-    );
+    );*/
     //const theme = useTheme();
   //   const renderItem = ({ item }) => (
   //       <Card>
