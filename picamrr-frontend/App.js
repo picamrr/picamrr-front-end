@@ -44,17 +44,16 @@ export default function App() {
         <NavigationContainer>
             <Stack.Navigator >
                 <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-
                 <Stack.Screen
                     name="Home"
                     component={Home}
                     options={({ navigation }) => ({
                         headerRight: () =>
                         (<div style={styles.wrapperIcons}>
-                            <TouchableOpacity style = {styles.icon} onPress={() => navigation.navigate('Reservations')}>
+                            <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Reservations')}>
                                 <Icon name="ios-list" size={27} />
                             </TouchableOpacity>
-                            <TouchableOpacity style = {styles.icon} onPress={() => navigation.navigate('Reservations')}>
+                            <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Reservations')}>
                                 <Icon name="ios-person" size={27} />
                             </TouchableOpacity>
                         </div>)
@@ -62,7 +61,6 @@ export default function App() {
                     }
                 />
                 <Stack.Screen name="Reservations" component={ViewReservations} />
-
                 <Stack.Screen name="ReservationForm" component={ReservationForm} />
             </Stack.Navigator>
         </NavigationContainer>
@@ -109,12 +107,12 @@ const styles = StyleSheet.create({
     },
 
     icon: {
-        marginLeft : '35%',
+        marginLeft: '35%',
     },
     wrapperIcons: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        paddingRight : '15%'
+        paddingRight: '15%'
     }
 });

@@ -33,14 +33,7 @@ export const cancelReservation = (id) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         }}}).catch((error) => {console.error(error + "valeu")})
-    // return fetch("http://localhost:8080/reservations?reservationId=" + id, {
-    //     method: 'DELETE',
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    // }).catch((error) =>{console.error(error + "valeu")});
 }
-
-
 
 const nextMap = {"securityLayer": finalLayer, "getRestaurants": securityLayer}
 

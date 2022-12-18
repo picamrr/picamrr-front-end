@@ -3,7 +3,6 @@ import { FlatList, Pressable, StyleSheet, View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { getReservations, cancelReservation } from "../services/APIRequests";
-import Modal from "react-native-modal";
 import { MyModal } from "../components/modal"
 
 const styles = StyleSheet.create({
@@ -29,7 +28,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center'
     },
-
     cancelbutton: {
         backgroundColor: '#75121c',
         height: "auto",
@@ -46,14 +44,35 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
         flexDirection: 'column',
-        alignItems: "center"
+        alignItems: "center",
 
+    },
+    cancelbuttonDisabled: {
+        backgroundColor: '#75121c',
+        height: "auto",
+        width: '108%',
+        borderRadius: 15,
+        borderWidth: 1,
+        borderColor: 'white',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        flexDirection: 'column',
+        alignItems: "center",
+        opacity: 0.3,
 
     },
     textCancelBtn: {
         color: 'white',
         fontSize: '15px'
     },
+
+
 
     modalbtn: {
         backgroundColor: '#75121c',
@@ -82,24 +101,44 @@ export default function Reservations({ navigation }) {
     const [reservations, setReservations] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedId, setSelectedId] = useState();
+    
     useEffect(() => {
         getReservations().then((data) => { if (data) { setReservations(data) } }).catch((error) => console.log("nu e bine"));
     }, []);
-
+    
     const handleModal = () => setIsModalVisible(() => !isModalVisible);
+
     const handleCancel = () => {
         cancelReservation(selectedId).then((_) => {
             const temp = [];
             for (const res of reservations) {
-                if (res.id !== selectedId){
+                if (res.id !== selectedId) {
                     temp.push(res);
                 }
-                    
+
             }
             setReservations(temp);
             handleModal();
         });
     };
+
+    const verifyDate = (date, gap) => {
+        const today = new Date();
+        const reservationHours = gap.split("-");
+        const start = new Date(date);
+        console.log(today);
+        console.log(reservationHours);
+        console.log(start);
+        if (today < start) {
+            return true;
+        }
+        if (start.getDay() == today.getDay() && start.getMonth() == today.getMonth() && start.getFullYear() == today.getFullYear()) {
+            if (reservationHours[0] > today.getHours().toString())
+                return true;
+        }
+        return false;
+
+    }
 
     const renderItem = ({ item }) => (
         <Card style={styles.card}>
@@ -117,7 +156,7 @@ export default function Reservations({ navigation }) {
                     </View>
                     <View>
                         <Card.Actions >
-                            <Pressable style={styles.cancelbutton} onPress={() => { setSelectedId(item.id); handleModal() }}>
+                            <Pressable disabled={verifyDate(item.dateOfReservation, item.gap) === true ? false : true} style={verifyDate(item.dateOfReservation, item.gap) === true ? styles.cancelbutton : styles.cancelbuttonDisabled} onPress={() => { setSelectedId(item.id); handleModal() }}>
                                 <Text style={styles.textCancelBtn}>Cancel</Text>
                                 <Text style={styles.textCancelBtn}>Reservation</Text>
                             </Pressable>
