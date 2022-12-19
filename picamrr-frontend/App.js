@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from "expo-status-bar";
 import Home from "./components/home";
 import ReservationForm from "./components/ReservationForm";
+import Profile from './components/profilePage';
 import Login from "./components/login/login";
 import ViewReservations from './components/viewReservations';
 import { TouchableOpacity } from 'react-native';
@@ -53,7 +54,7 @@ export default function App() {
                             <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Reservations')}>
                                 <Icon name="ios-list" size={27} />
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Reservations')}>
+                            <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Profile')}>
                                 <Icon name="ios-person" size={27} />
                             </TouchableOpacity>
                         </div>)
@@ -61,6 +62,7 @@ export default function App() {
                     }
                 />
                 <Stack.Screen name="Reservations" component={ViewReservations} />
+                <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen name="ReservationForm" component={ReservationForm} />
             </Stack.Navigator>
         </NavigationContainer>
