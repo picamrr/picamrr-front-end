@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
 export default function Home({ navigation, route }) {
 
     const renderItem = ({ item }) => {
-        console.log(item.image);
         return (
             <Card style={styles.card}>
                 <Card.Title titleStyle={styles.title} subtitleStyle={styles.subtitle}
@@ -68,7 +67,7 @@ export default function Home({ navigation, route }) {
                             subtitle ={item.stars + "⭐"} />
                 <Card.Cover source={ {uri:`data:image/jpeg;base64,${item.image}`}} />
                 <Card.Content>
-                    <Title style={styles.address_phone}>{"📍  " + item.address}</Title>
+                    <Title style={styles.address_phone}>{"📍" + item.address}</Title>
                     <Title style={styles.address_phone}>{"📞" + item.phoneNumber}</Title>
                 </Card.Content>
                 <Card.Actions>

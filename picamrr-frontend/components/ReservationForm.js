@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Text, StyleSheet, View, Button, Pressable} from 'react-native';
 import {Card, Title} from "react-native-paper";
 import InputSpinner from "react-native-input-spinner";
@@ -6,13 +6,10 @@ import "../css/reservation-form.css";
 import {DateTimePickerModal} from 'react-native-paper-datetimepicker';
 import {TextInput} from 'react-native-paper'
 import DropDownPicker from 'react-native-dropdown-picker';
-import {addReservation} from "../services/APIRequests";
+import {addReservation, getUserByEmail} from "../services/APIRequests";
+import {getToken} from "../services/SecureStorage";
+import {toast} from "react-hot-toast";
 
-const loggedUser = {
-    id: 1,
-    name: "Popescu Ion",
-    email: "popescuion@gmail.com",
-}
 
 export default function ReservationForm({navigation, route}) {
     const [open, setOpen] = useState(false);
@@ -22,10 +19,27 @@ export default function ReservationForm({navigation, route}) {
     const [items, setItems] = useState(getItems(route.params.availableSeatsPerInterval));
     const restaurantId = route.params.id;
 
+    const [fieldName, setFieldName] = useState("");
+    const [fieldEmail, setFieldEmail] = useState("");
+
+    useEffect(() => {
+        const getUser = async () => {
+            await getToken().then(async (encodedString) => {
+                const emailOfUser = atob(encodedString).split(':')[0];
+                await getUserByEmail(emailOfUser).then(user => {
+                    setFieldEmail(user.email);
+                    setFieldName(user.name);
+                });
+            });
+        }
+        getUser();
+    }, [])
+
+
     function getItems(availableSeatsPerInterval) {
         let items = [];
-        let jsonData = {}
         availableSeatsPerInterval.forEach(function(a) {
+            let jsonData = {}
             jsonData["value"] = a.gap;
             jsonData["label"] = a.gap;
             items.push(jsonData);
@@ -49,15 +63,25 @@ export default function ReservationForm({navigation, route}) {
         hideDatePicker();
     };
 
-    function bookReservation() {
-        addReservation(restaurantId, date, spinnerValue, value).then(r => console.log(r));
+    const bookReservation = async () => {
+        await addReservation(restaurantId, date, spinnerValue, value).then(response => {
+            if (response.status === 200) {
+                toast.success("Reservation made successfully!", { position: "bottom-center" });
+                return 1;
+            }
+            return response.json();
+        }).then(response => {
+            if (response !== 1) {
+                toast.error(response.message, { position: "bottom-center" });
+            }
+        })
     }
 
     return (
         <View style={styles.parent}>
             <Card>
                 <Card.Title title={route.params.name} subtitle={route.params.stars + "⭐"}/>
-                <Card.Cover source={{uri: route.params.image}}/>
+                <Card.Cover source={{uri: `data:image/jpeg;base64,${route.params.image}`}}/>
                 <Card.Content>
                     <Title>{route.params.location}</Title>
                 </Card.Content>
@@ -70,7 +94,7 @@ export default function ReservationForm({navigation, route}) {
                             name="human"
                         />
                     }
-                    value={loggedUser.name}
+                    value={fieldName}
                     editable={false}
                 />
 
@@ -81,7 +105,7 @@ export default function ReservationForm({navigation, route}) {
                             name="email"
                         />
                     }
-                    value={loggedUser.email}
+                    value={fieldEmail}
                     editable={false}
                 />
 
@@ -98,7 +122,7 @@ export default function ReservationForm({navigation, route}) {
                 />
                 <DateTimePickerModal
                     visible={isDatePickerVisible}
-                    mode='date'
+                    mode="date"
                     date={date}
                     onConfirm={handleConfirm}
                     label="Pick A Date"
@@ -130,7 +154,7 @@ export default function ReservationForm({navigation, route}) {
                     title={"Book Now"}
                     onPress={() => {
                         bookReservation();
-                        navigation.navigate('Home')
+                        navigation.goBack();
                     }}
                 />
             </View>

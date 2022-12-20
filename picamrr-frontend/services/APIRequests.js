@@ -61,46 +61,63 @@ export const cancelReservation = (id) => {
 }
 
 export const addReservation = (id, dateOfReservation, noOfSeats, gap) => {
-    console.log(id, dateOfReservation.toLocaleString(), noOfSeats, gap);
-    return nextLayerAddReservation("cancelReservation", {
+    console.log(id, dateOfReservation.toISOString().split("T")[0], noOfSeats, gap);
+
+    return nextLayerAddReservation("addReservation", {
         url: "http://localhost:8080/reservations?restaurantId=" + id,
         details: {
-            method: "POST", headers: {
+            method: "POST",
+            headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-            }
-        },
-        body: {
-            dateOfReservation: dateOfReservation.toLocaleString(),
-            noOfSeats: noOfSeats,
-            gap: gap,
+            },
+
+            body: JSON.stringify(
+                {
+                    dateOfReservation: dateOfReservation.toISOString().split("T")[0],
+                    noOfSeats: noOfSeats,
+                    gap: gap
+                }
+            )
         }
     }).catch((error) => {
         console.error(error + "valeu")
     })
 }
 
-export const getUserByEmail = (email) => {
-    return nextLayerGetUserByEmail("getUserByEmail", {url: "http://localhost:8080/users/" + email, details: {method: "GET", headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        }}}).then((response) => {return response.json()})
-        .catch((error) => {console.error(error + "valeu")})
+export const updateUser = (email, name, phoneNumber) => {
+    return nextLayerUpdateUser("updateUser", {
+        url: "http://localhost:8080/users/" + email,
+        details: {
+            method: "PUT", headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+
+            body: JSON.stringify(
+                {
+                    name: name,
+                    phoneNumber: phoneNumber
+                }
+            )
+        }
+    });
 }
 
-export const updateUser = (email, name, phoneNumber) => {
-    return nextLayerUpdateUser("updateUser", {url: "http://localhost:8080/users/" + email, details: {method: "PUT", headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-
-        body: JSON.stringify(
-            {
-                name: name,
-                phoneNumber: phoneNumber
+export const getUserByEmail = (email) => {
+    return nextLayerGetUserByEmail("getUserByEmail", {
+        url: "http://localhost:8080/users/" + email, details: {
+            method: "GET", headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
             }
-        )
-    }});
+        }
+    }).then((response) => {
+        return response.json()
+    })
+        .catch((error) => {
+            console.error(error + "valeu")
+        })
 }
 
 const nextMap = {"securityLayer": finalLayer, "getRestaurants": securityLayer}
