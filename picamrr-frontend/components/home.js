@@ -1,8 +1,9 @@
 import {Button, Card, Title} from "react-native-paper";
-import {FlatList, StyleSheet, View} from "react-native";
+import {Dimensions, FlatList, StyleSheet, View} from "react-native";
 import React from "react";
 import {StatusBar} from "expo-status-bar";
 
+const deviceWidth = Math.round(Dimensions.get('window').width);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -15,12 +16,43 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
     },
     title: {
-        fontSize: 32,
+        fontSize: 25,
+        fontFamily: "FontFamily",
+        fontWeight:'600',
+        lineHeight: 24,
+    },
+    subtitle: {
+        fontSize: 15,
+        fontWeight:'500',
+    },
+    address_phone:{
+        fontSize: 20,
+        fontFamily: "FontFamily",
     },
     card: {
+        width: deviceWidth - 25,
         borderRadius: 10,
         margin: 10,
         marginTop: 2,
+        shadowColor:'#000',
+        shadowOffset: {
+            width: 5,
+            height:5,
+        },
+        shadowOpacity:0.5,
+        shadowRadius: 5,
+        elevation: 9
+    },
+    button:{
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor:'#000',
+        paddingVertical: 5,
+        paddingHorizontal: 15,
+        borderRadius: 4,
+        shadowRadius: 5,
+        elevation: 3,
+        backgroundColor: 'rgba(123,104,238,0.8)',
     }
 });
 
@@ -29,13 +61,17 @@ export default function Home({ navigation, route }) {
         console.log(item.image);
         return (
             <Card style={styles.card}>
-                <Card.Title title = {item.name} subtitle ={item.stars + "⭐"} />
+                <Card.Title titleStyle={styles.title} subtitleStyle={styles.subtitle}
+                            title = {item.name}
+                            subtitle ={item.stars + "⭐"} />
                 <Card.Cover source={ {uri:`data:image/jpeg;base64,${item.image}`}} />
                 <Card.Content>
-                    <Title>{item.location}</Title>
+                    <Title style={styles.address_phone}>{"📍  " + item.address}</Title>
+                    <Title style={styles.address_phone}>{"📞" + item.phoneNumber}</Title>
                 </Card.Content>
                 <Card.Actions>
-                    <Button onPress={() => navigation.navigate('ReservationForm', {id: item.id, name: item.name,
+                    <Button style = {styles.button}
+                            onPress={() => navigation.navigate('ReservationForm', {id: item.id, name: item.name,
                         image: item.image, location: item.location, stars: item.stars})}>Book</Button>
                 </Card.Actions>
             </Card>
