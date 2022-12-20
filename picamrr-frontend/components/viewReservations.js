@@ -3,7 +3,7 @@ import { FlatList, Pressable, StyleSheet, View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { getReservations, cancelReservation } from "../services/APIRequests";
-import { MyModal } from "../components/modal"
+import { MyModal } from "./modal"
 
 const styles = StyleSheet.create({
     container: {
