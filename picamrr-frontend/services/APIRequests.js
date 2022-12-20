@@ -5,6 +5,8 @@ const nextLayer = async (currentLayer, request) => await nextMap[currentLayer](r
 const nextLayerReservations = async (currentLayer, request) => await nextMapReservations[currentLayer](request)
 const nextLayerCancelReservations = async (currentLayer, request) => await nextMapCancelReservations[currentLayer](request)
 const nextLayerAddReservation = async (currentLayer, request) => await nextMapAddReservation[currentLayer](request)
+const nextLayerGetUserByEmail = async (currentLayer, request) => await nextMapGetUserByEmail[currentLayer](request)
+const nextLayerUpdateUser = async (currentLayer, request) => await nextMapUpdateUser[currentLayer](request)
 
 const finalLayer = (request) => fetch(request.url, request.details);
 
@@ -78,10 +80,37 @@ export const addReservation = (id, dateOfReservation, noOfSeats, gap) => {
     })
 }
 
+export const getUserByEmail = (email) => {
+    return nextLayerGetUserByEmail("getUserByEmail", {url: "http://localhost:8080/users/" + email, details: {method: "GET", headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }}}).then((response) => {return response.json()})
+        .catch((error) => {console.error(error + "valeu")})
+}
+
+export const updateUser = (email, name, phoneNumber) => {
+    return nextLayerUpdateUser("updateUser", {url: "http://localhost:8080/users/" + email, details: {method: "PUT", headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+
+        body: JSON.stringify(
+            {
+                name: name,
+                phoneNumber: phoneNumber
+            }
+        )
+    }});
+}
+
 const nextMap = {"securityLayer": finalLayer, "getRestaurants": securityLayer}
 
 const nextMapReservations = {"securityLayer": finalLayer, "getReservations": securityLayer}
 
 const nextMapCancelReservations = {"securityLayer": finalLayer, "cancelReservation": securityLayer}
 
+
 const nextMapAddReservation = {"securityLayer": finalLayer, "addReservation": securityLayer}
+const nextMapGetUserByEmail = {"securityLayer": finalLayer, "getUserByEmail": securityLayer}
+const nextMapUpdateUser = {"securityLayer": finalLayer, "updateUser": securityLayer}
+
