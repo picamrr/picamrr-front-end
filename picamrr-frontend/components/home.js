@@ -3,30 +3,6 @@ import {FlatList, StyleSheet, View} from "react-native";
 import React from "react";
 import {StatusBar} from "expo-status-bar";
 
-const CARDS = [
-    {
-        id: 1,
-        name: 'Mad Bee Bistro',
-        image: require('../images/restaurant1.jpg'),
-        location: "Strada Regele Ferdinand 22, Cluj-Napoca 400394",
-        stars:9.5
-    },
-    {
-        id: 2,
-        name: 'Ginger Bliss Provisions',
-        image: require('../images/restaurant2.jpg'),
-        location: "Strada Émile Zola 5, Cluj-Napoca 400112",
-        stars:8.8
-    },
-    {
-        id: 3,
-        name: 'Daily Lantern Lounge',
-        image: require('../images/restaurant3.jpg'),
-        location: "Str. Al.V. Voievod nr. 53-55",
-        stars:9.1
-    },
-]
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -58,13 +34,14 @@ export default function Home({ navigation, route }) {
             </Card.Content>
             <Card.Actions>
                 <Button onPress={() => navigation.navigate('ReservationForm', {id: item.id, name: item.name,
-                    image: item.image, location: item.location, stars: item.stars})}>Book</Button>
+                    image: item.image, location: item.location, stars: item.stars,
+                    availableSeatsPerInterval: item.availableSeatsPerInterval})}>Book</Button>
             </Card.Actions>
         </Card>
     );
 
     return (
-        <View  style={styles.container}>
+        <View style={styles.container}>
             <FlatList
                 data={route.params.restaurants}
                 renderItem={renderItem}

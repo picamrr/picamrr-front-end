@@ -12,30 +12,6 @@ import ViewReservations from './components/viewReservations';
 import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-// const CARDS = [
-//     {
-//         id: 1,
-//         name: 'brynn',
-//         image: 'https://picsum.photos/700',
-//         location: "ceva",
-//         stars:9.2
-//     },
-//     {
-//         id: 2,
-//         name: 'brasfasfasfynn',
-//         image: 'https://picsum.photos/700',
-//         location: "ceva",
-//         stars:9.2
-//     },
-//     {
-//         id: 3,
-//         name: 'brasfasfasfynn',
-//         image: 'https://picsum.photos/700',
-//         location: "ceva 2",
-//         stars:9.2
-//     },
-// ]
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
