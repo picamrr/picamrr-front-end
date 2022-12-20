@@ -3,6 +3,7 @@ import {Dimensions, FlatList, StyleSheet, View} from "react-native";
 import React from "react";
 import {StatusBar} from "expo-status-bar";
 
+
 const deviceWidth = Math.round(Dimensions.get('window').width);
 const styles = StyleSheet.create({
     container: {
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
 });
 
 export default function Home({ navigation, route }) {
+
     const renderItem = ({ item }) => {
         console.log(item.image);
         return (
@@ -72,14 +74,14 @@ export default function Home({ navigation, route }) {
                 <Card.Actions>
                     <Button style = {styles.button}
                             onPress={() => navigation.navigate('ReservationForm', {id: item.id, name: item.name,
-                        image: item.image, location: item.location, stars: item.stars})}>Book</Button>
+                        image: item.image, location: item.location, stars: item.stars, availableSeatsPerInterval: item.availableSeatsPerInterval})}>Book</Button>
                 </Card.Actions>
             </Card>
         )
     }
 
     return (
-        <View  style={styles.container}>
+        <View style={styles.container}>
             <FlatList
                 data={route.params.restaurants}
                 renderItem={renderItem}
