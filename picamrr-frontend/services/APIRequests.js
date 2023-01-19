@@ -16,9 +16,10 @@ const securityLayer = async (request) => {
     request.details.headers["Authorization"] = "Basic " + await getToken()
     return nextLayer("securityLayer", request)
 };
-export const addReview = (restaurantId, noOfStars, reviewText) => {
+export const addReview = (restaurantId, reservationId, noOfStars, reviewText) => {
     return nextLayerAddReview("addReview", {
-        url: "http://localhost:8080/reviews?restaurantId=" + restaurantId,
+        url: "http://localhost:8080/reviews?restaurantId=" + restaurantId +
+            "&reservationId=" + reservationId,
         details: {
             method: "POST",
             headers: {

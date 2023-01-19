@@ -103,6 +103,7 @@ export default function Reservations({navigation}) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isModalRatingsVisible, setIsModalRatingsVisible] = useState(false);
     const [selectedId, setSelectedId] = useState();
+    const [restaurantSelectedId, setRestaurantSelectedId] = useState();
     const [rating, setRating] = useState(0);
     const [ratingText, setRatingText] = useState("");
 
@@ -132,10 +133,10 @@ export default function Reservations({navigation}) {
     };
 
     const handleAddReview = () => {
-        addReview(selectedId, rating, ratingText).then((_) => {
+        addReview(restaurantSelectedId, selectedId, rating, ratingText).then((_) => {
             handleModalRatings();
         });
-
+        navigation.goBack();
     };
 
     const verifyDate = (date, gap) => {
@@ -157,12 +158,21 @@ export default function Reservations({navigation}) {
     }
 
     const renderButton = ({item}) => {
-        if (verifyDate(item.dateOfReservation, item.gap) !== true) {
+        if (item.rated) {
+            return (
+                <Pressable
+                    style={styles.cancelbutton}
+                >
+                    <Text style={styles.textCancelBtn}>Thanks!</Text>
+                </Pressable>
+            );
+        } else if (verifyDate(item.dateOfReservation, item.gap) !== true) {
             return (
                 <Pressable
                     style={styles.cancelbutton}
                     onPress={() => {
-                        setSelectedId(item.restaurant.id);
+                        setSelectedId(item.id);
+                        setRestaurantSelectedId(item.restaurant.id);
                         handleModalRatings();
                     }}
                 >

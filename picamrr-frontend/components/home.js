@@ -14,7 +14,9 @@ export default function Home({ navigation, route }) {
 
     const renderItem = ({ item }) => {
         return (
-            <Card style={styles.card}>
+            <Card style={styles.card}
+                  onPress={() => navigation.navigate('ReviewsPage', {id: item.id, name: item.name,
+                      image: item.image, location: item.location, stars: item.stars, availableSeatsPerInterval: item.availableSeatsPerInterval,})}>
                 <Card.Title titleStyle={styles.title} subtitleStyle={styles.subtitle}
                             title = {item.name}
                             subtitle ={item.stars + "⭐"} />
@@ -23,11 +25,6 @@ export default function Home({ navigation, route }) {
                     <Title style={styles.address_phone}>{"📍" + item.address}</Title>
                     <Title style={styles.address_phone}>{"📞" + item.phoneNumber}</Title>
                 </Card.Content>
-                <Card.Actions>
-                    <Button style = {styles.button}
-                            onPress={() => navigation.navigate('ReviewsPage', {id: item.id, name: item.name,
-                        image: item.image, location: item.location, stars: item.stars, availableSeatsPerInterval: item.availableSeatsPerInterval})}>Book</Button>
-                </Card.Actions>
             </Card>
         )
     }
