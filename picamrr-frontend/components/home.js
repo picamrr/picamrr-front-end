@@ -1,10 +1,66 @@
-import {Button, Card, Title} from "react-native-paper";
+import {Button, Card, Searchbar, Title} from "react-native-paper";
 import {Dimensions, FlatList, StyleSheet, View} from "react-native";
-import React from "react";
+import React, {useState} from "react";
 import {StatusBar} from "expo-status-bar";
-
+import {SearchBar} from "react-native-elements";
 
 const deviceWidth = Math.round(Dimensions.get('window').width);
+
+
+export default function Home({ navigation, route }) {
+    const [data, setData] = useState(route.params.restaurants);
+    const [searchQuery, setSearchQuery] = React.useState('');
+    const [displayedData, setDisplayedData] = useState(route.params.restaurants);
+
+    const renderItem = ({ item }) => {
+        return (
+            <Card style={styles.card}>
+                <Card.Title titleStyle={styles.title} subtitleStyle={styles.subtitle}
+                            title = {item.name}
+                            subtitle ={item.stars + "⭐"} />
+                <Card.Cover source={ {uri:`data:image/jpeg;base64,${item.image}`}} />
+                <Card.Content>
+                    <Title style={styles.address_phone}>{"📍" + item.address}</Title>
+                    <Title style={styles.address_phone}>{"📞" + item.phoneNumber}</Title>
+                </Card.Content>
+                <Card.Actions>
+                    <Button style = {styles.button}
+                            onPress={() => navigation.navigate('ReviewsPage', {id: item.id, name: item.name,
+                        image: item.image, location: item.location, stars: item.stars, availableSeatsPerInterval: item.availableSeatsPerInterval})}>Book</Button>
+                </Card.Actions>
+            </Card>
+        )
+    }
+
+    function searchRestaurants(query) {
+        if (searchQuery === "") {
+            setDisplayedData(data);
+        } else {
+            setDisplayedData(data.filter(d => d.name.startsWith(query)));
+        }
+    }
+
+    const onChangeSearch = query => {
+        setSearchQuery(query);
+        searchRestaurants(query);
+    }
+
+    return (
+        <View style={styles.container}>
+            <Searchbar
+                placeholder="Search"
+                onChangeText={onChangeSearch}
+                value={searchQuery}
+            />
+
+            <FlatList
+                data={displayedData}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+            />
+        </View>);
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -54,37 +110,6 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 3,
         backgroundColor: 'rgba(123,104,238,0.8)',
-    }
+    },
 });
 
-export default function Home({ navigation, route }) {
-
-    const renderItem = ({ item }) => {
-        return (
-            <Card style={styles.card}>
-                <Card.Title titleStyle={styles.title} subtitleStyle={styles.subtitle}
-                            title = {item.name}
-                            subtitle ={item.stars + "⭐"} />
-                <Card.Cover source={ {uri:`data:image/jpeg;base64,${item.image}`}} />
-                <Card.Content>
-                    <Title style={styles.address_phone}>{"📍" + item.address}</Title>
-                    <Title style={styles.address_phone}>{"📞" + item.phoneNumber}</Title>
-                </Card.Content>
-                <Card.Actions>
-                    <Button style = {styles.button}
-                            onPress={() => navigation.navigate('ReservationForm', {id: item.id, name: item.name,
-                        image: item.image, location: item.location, stars: item.stars, availableSeatsPerInterval: item.availableSeatsPerInterval})}>Book</Button>
-                </Card.Actions>
-            </Card>
-        )
-    }
-
-    return (
-        <View style={styles.container}>
-            <FlatList
-                data={route.params.restaurants}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-            />
-        </View>);
-}
