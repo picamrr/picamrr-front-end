@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     cancelbutton: {
-        backgroundColor: '#75121c',
+        backgroundColor: 'purple',
         height: 50,
         width: 100,
         borderRadius: 15,
@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
         display: 'flex',
-        align: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     cancelbuttonDisabled: {
         backgroundColor: '#75121c',
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
 
 
     modalbtn: {
-        backgroundColor: '#75121c',
+        backgroundColor: 'purple',
         height: "30",
         width: "50",
         borderRadius: 15,
@@ -93,6 +94,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: "center",
         color: "white"
+    },
+    rateModalBody: {
+        flex: 1,
+        alignItems:"center",
+        justifyContent:"center",
     }
 
 });
@@ -159,13 +165,14 @@ export default function Reservations({navigation}) {
 
     const renderButton = ({item}) => {
         if (item.rated) {
-            return (
-                <Pressable
-                    style={styles.cancelbutton}
-                >
-                    <Text style={styles.textCancelBtn}>Thanks!</Text>
-                </Pressable>
-            );
+            return;
+            // return (
+            //     // <Pressable
+            //     //     style={styles.cancelbutton}
+            //     // >
+            //     //     <Text style={styles.textCancelBtn}>Thanks!</Text>
+            //     // </Pressable>
+            // );
         } else if (verifyDate(item.dateOfReservation, item.gap) !== true) {
             return (
                 <Pressable
@@ -249,13 +256,14 @@ export default function Reservations({navigation}) {
             <MyModal isVisible={isModalRatingsVisible === undefined ? false : isModalRatingsVisible === true}>
                 <MyModal.Container>
                     <MyModal.Header title="Rate your experience!"/>
-                    <MyModal.Body>
+                    <MyModal.Body style={styles.rateModalBody}>
+                        <View style={styles.rateModalBody}>
                         <StarRating
                             maxStars={5}
                             rating={rating}
                             onChange={setRating}
                         />
-
+                        </View>
                         <TextInput
                             editable
                             multiline

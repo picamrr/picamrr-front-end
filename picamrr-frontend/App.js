@@ -26,6 +26,7 @@ export default function App() {
                     name="Home"
                     component={Home}
                     options={({ navigation }) => ({
+                        headerTitle: "PICAMRR",
                         headerRight: () =>
                         (<div style={styles.wrapperIcons}>
                             <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Reservations')}>
@@ -38,10 +39,14 @@ export default function App() {
                     })
                     }
                 />
-                <Stack.Screen name="Reservations" component={ViewReservations} />
-                <Stack.Screen name="Profile" component={Profile} />
-                <Stack.Screen name="ReservationForm" component={ReservationForm} />
-                <Stack.Screen name="ReviewsPage" component={ReviewsPage} />
+                <Stack.Screen name="Reservations" component={ViewReservations} options={{
+                    headerTitle: "PICAMRR",}} />
+                <Stack.Screen name="Profile" component={Profile} options={{
+                    headerTitle: "PICAMRR",}} />
+                <Stack.Screen name="ReservationForm" component={ReservationForm} options={{
+                    headerTitle: "PICAMRR",}} />
+                <Stack.Screen name="ReviewsPage" component={ReviewsPage} options={{
+                    headerTitle: "PICAMRR",}} />
             </Stack.Navigator>
         </NavigationContainer>
     );

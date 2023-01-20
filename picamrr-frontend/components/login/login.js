@@ -155,6 +155,7 @@ export default function Login({navigation}) {
                         />
                     )}
                     <TextInput
+                        secureTextEntry={true}
                         placeholder="Password"
                         placeholderTextColor="black"
                         style={styles.textInput}

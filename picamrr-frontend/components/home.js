@@ -19,7 +19,7 @@ export default function Home({ navigation, route }) {
                       image: item.image, location: item.location, stars: item.stars, availableSeatsPerInterval: item.availableSeatsPerInterval,})}>
                 <Card.Title titleStyle={styles.title} subtitleStyle={styles.subtitle}
                             title = {item.name}
-                            subtitle ={item.stars + "⭐"} />
+                            subtitle ={String(item.stars).slice(0,3) + "⭐"} />
                 <Card.Cover source={ {uri:`data:image/jpeg;base64,${item.image.trim()}`}} />
                 <Card.Content>
                     <Title style={styles.address_phone}>{"📍" + item.address}</Title>
@@ -33,7 +33,7 @@ export default function Home({ navigation, route }) {
         if (searchQuery === "") {
             setDisplayedData(data);
         } else {
-            setDisplayedData(data.filter(d => d.name.startsWith(query)));
+            setDisplayedData(data.filter(d => d.name.toLowerCase().startsWith(query.toLowerCase())));
         }
     }
 

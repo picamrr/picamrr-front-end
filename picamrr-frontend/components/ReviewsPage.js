@@ -37,8 +37,8 @@ export default function ReviewsPage({navigation, route}) {
     return (
         <View style={styles.parent}>
             <Card>
-                <Card.Title title={route.params.name} subtitle={route.params.stars + "⭐"}/>
-                <Card.Cover source={{uri: `data:image/jpeg;base64,${route.params.image}`}}/>
+                <Card.Title title={route.params.name} subtitle={String(route.params.stars).slice(0,3)+ "⭐"}/>
+                <Card.Cover source={{uri: `data:image/jpeg;base64,${route.params.image.trim()}`}}/>
                 <Card.Content>
                     <Title>{route.params.location}</Title>
                 </Card.Content>
@@ -50,9 +50,9 @@ export default function ReviewsPage({navigation, route}) {
             />
             <FAB
                 visible={true}
-                title="Create"
-                icon={"plus"}
-                small
+                label="BOOK"
+                size={"small"}
+                style={styles.fab}
                 onPress={() =>
                     navigation.navigate('ReservationForm', {
                     id: item.id,
@@ -91,5 +91,12 @@ const styles = StyleSheet.create({
         width: 250,
         alignSelf: "center"
     },
-
+    fab: {
+        position: "absolute",
+        width: "15%",
+        margin: 16,
+        bottom: 0,
+        right: 0,
+        backgroundColor: "purple",
+    },
 });

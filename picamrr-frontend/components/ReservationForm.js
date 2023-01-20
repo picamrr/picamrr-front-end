@@ -8,7 +8,7 @@ import {TextInput} from 'react-native-paper'
 import DropDownPicker from 'react-native-dropdown-picker';
 import {addReservation, getUserByEmail} from "../services/APIRequests";
 import {getToken} from "../services/SecureStorage";
-import {toast} from "react-hot-toast";
+import {toast, Toaster} from "react-hot-toast";
 
 
 export default function ReservationForm({navigation, route}) {
@@ -65,8 +65,10 @@ export default function ReservationForm({navigation, route}) {
 
     const bookReservation = async () => {
         await addReservation(restaurantId, date, spinnerValue, value).then(response => {
-            if (response.status === 200) {
-                toast.success("Reservation made successfully!", { position: "bottom-center" });
+            console.log("Added reservation " + response.status);
+            if (response.status === 201) {
+                // toast.success("Reservation made successfully!", { position: "bottom-center" });
+                navigation.goBack();
                 return 1;
             }
             return response.json();
@@ -75,14 +77,14 @@ export default function ReservationForm({navigation, route}) {
                 toast.error(response.message, { position: "bottom-center" });
             }
         })
-        navigation.goBack();
     }
 
     return (
         <View style={styles.parent}>
+            <Toaster />
             <Card>
-                <Card.Title title={route.params.name} subtitle={route.params.stars + "⭐"}/>
-                <Card.Cover source={{uri: `data:image/jpeg;base64,${route.params.image}`}}/>
+                <Card.Title title={route.params.name} subtitle={String(route.params.stars).slice(0,3) + "⭐"}/>
+                <Card.Cover source={{uri: `data:image/jpeg;base64,${route.params.image.trim()}`}}/>
                 <Card.Content>
                     <Title>{route.params.location}</Title>
                 </Card.Content>
@@ -132,6 +134,7 @@ export default function ReservationForm({navigation, route}) {
                 <DropDownPicker
                     style={styles.dropDownPicker}
                     open={open}
+                    placeholder={"Choose the appropiate interval"}
                     value={value}
                     items={items}
                     setOpen={setOpen}
@@ -149,6 +152,7 @@ export default function ReservationForm({navigation, route}) {
                     skin={"paper"}
                     color="purple"
                     background={"#e7e7e7"}
+                    onChange={(newValue) => setSpinnerValue(newValue)}
                 />
                 <Button
                     color='purple'
