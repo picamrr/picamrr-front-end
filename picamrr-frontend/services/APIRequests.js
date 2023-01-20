@@ -7,6 +7,8 @@ const nextLayerCancelReservations = async (currentLayer, request) => await nextM
 const nextLayerAddReservation = async (currentLayer, request) => await nextMapAddReservation[currentLayer](request)
 const nextLayerGetUserByEmail = async (currentLayer, request) => await nextMapGetUserByEmail[currentLayer](request)
 const nextLayerUpdateUser = async (currentLayer, request) => await nextMapUpdateUser[currentLayer](request)
+const nextLayerAddReview = async (currentLayer, request) => await nextMapAddReview[currentLayer](request)
+const nextLayerGetReviewsForRestaurant = async (currentLayer, request) => await nextMapGetReviewsForRestaurant[currentLayer](request)
 
 const finalLayer = (request) => fetch(request.url, request.details);
 
@@ -14,6 +16,49 @@ const securityLayer = async (request) => {
     request.details.headers["Authorization"] = "Basic " + await getToken()
     return nextLayer("securityLayer", request)
 };
+export const addReview = (restaurantId, reservationId, noOfStars, reviewText) => {
+    return nextLayerAddReview("addReview", {
+        url: "http://localhost:8080/reviews?restaurantId=" + restaurantId +
+            "&reservationId=" + reservationId,
+        details: {
+            method: "POST",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                    noOfStars: noOfStars,
+                    reviewText: reviewText,
+                }
+            ),
+        }
+    }).then((response) => {
+        return response.json();
+    }).catch((error) => {
+        console.log(error + " valeu!");
+    })
+}
+
+export const getReviewsForRestaurant = (restaurantId) => {
+    console.log(restaurantId);
+    return nextLayerGetReviewsForRestaurant("getReviewsForRestaurant", {
+        url: "http://localhost:8080/reviews/" + restaurantId,
+        details: {
+            method: "GET",
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'text/plain',
+            }
+        }
+    }).then((response) => {
+        console.log(response);
+        return response.json()
+    })
+        .catch((error) => {
+            console.error(error + "valeu")
+        })
+}
+
 
 export const getRestaurants = () => {
     return nextLayer("getRestaurants", {
@@ -130,4 +175,6 @@ const nextMapCancelReservations = {"securityLayer": finalLayer, "cancelReservati
 const nextMapAddReservation = {"securityLayer": finalLayer, "addReservation": securityLayer}
 const nextMapGetUserByEmail = {"securityLayer": finalLayer, "getUserByEmail": securityLayer}
 const nextMapUpdateUser = {"securityLayer": finalLayer, "updateUser": securityLayer}
+const nextMapAddReview = {"securityLayer": finalLayer, "addReview": securityLayer}
+const nextMapGetReviewsForRestaurant = {"securityLayer": finalLayer, "getReviewsForRestaurant": securityLayer}
 

@@ -1,9 +1,12 @@
-import { Button, Card, Title, Divider } from "react-native-paper";
-import { FlatList, Pressable, StyleSheet, View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
-import { getReservations, cancelReservation } from "../services/APIRequests";
-import { MyModal } from "./modal"
+import {Button, Card, Title, Divider} from "react-native-paper";
+import {FlatList, Pressable, StyleSheet, View, Text, TextInput} from "react-native";
+import React, {useEffect, useState} from "react";
+import {StatusBar} from "expo-status-bar";
+import {getReservations, cancelReservation, addReview} from "../services/APIRequests";
+import {MyModal} from "./modal"
+import StarRating from 'react-native-star-rating-widget';
+import {FAB} from 'react-native-paper';
+import {Portal} from "@material-ui/core";
 
 const styles = StyleSheet.create({
     container: {
@@ -30,8 +33,8 @@ const styles = StyleSheet.create({
     },
     cancelbutton: {
         backgroundColor: '#75121c',
-        height: "auto",
-        width: '108%',
+        height: 50,
+        width: 100,
         borderRadius: 15,
         borderWidth: 1,
         borderColor: 'white',
@@ -43,9 +46,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-        flexDirection: 'column',
-        alignItems: "center",
-
+        display: 'flex',
+        align: 'center',
     },
     cancelbuttonDisabled: {
         backgroundColor: '#75121c',
@@ -73,7 +75,6 @@ const styles = StyleSheet.create({
     },
 
 
-
     modalbtn: {
         backgroundColor: '#75121c',
         height: "30",
@@ -97,16 +98,25 @@ const styles = StyleSheet.create({
 });
 
 
-export default function Reservations({ navigation }) {
+export default function Reservations({navigation}) {
     const [reservations, setReservations] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalRatingsVisible, setIsModalRatingsVisible] = useState(false);
     const [selectedId, setSelectedId] = useState();
-    
+    const [restaurantSelectedId, setRestaurantSelectedId] = useState();
+    const [rating, setRating] = useState(0);
+    const [ratingText, setRatingText] = useState("");
+
     useEffect(() => {
-        getReservations().then((data) => { if (data) { setReservations(data) } }).catch((error) => console.log("nu e bine"));
+        getReservations().then((data) => {
+            if (data) {
+                setReservations(data)
+            }
+        }).catch((error) => console.log("nu e bine"));
     }, []);
-    
+
     const handleModal = () => setIsModalVisible(() => !isModalVisible);
+    const handleModalRatings = () => setIsModalRatingsVisible(() => !isModalRatingsVisible);
 
     const handleCancel = () => {
         cancelReservation(selectedId).then((_) => {
@@ -122,6 +132,13 @@ export default function Reservations({ navigation }) {
         });
     };
 
+    const handleAddReview = () => {
+        addReview(restaurantSelectedId, selectedId, rating, ratingText).then((_) => {
+            handleModalRatings();
+        });
+        navigation.goBack();
+    };
+
     const verifyDate = (date, gap) => {
         const today = new Date();
         const reservationHours = gap.split("-");
@@ -132,7 +149,7 @@ export default function Reservations({ navigation }) {
         if (today < start) {
             return true;
         }
-        if (start.getDay() == today.getDay() && start.getMonth() == today.getMonth() && start.getFullYear() == today.getFullYear()) {
+        if (start.getDay() === today.getDay() && start.getMonth() === today.getMonth() && start.getFullYear() === today.getFullYear()) {
             if (reservationHours[0] > today.getHours().toString())
                 return true;
         }
@@ -140,56 +157,129 @@ export default function Reservations({ navigation }) {
 
     }
 
-    const renderItem = ({ item }) => (
+    const renderButton = ({item}) => {
+        if (item.rated) {
+            return (
+                <Pressable
+                    style={styles.cancelbutton}
+                >
+                    <Text style={styles.textCancelBtn}>Thanks!</Text>
+                </Pressable>
+            );
+        } else if (verifyDate(item.dateOfReservation, item.gap) !== true) {
+            return (
+                <Pressable
+                    style={styles.cancelbutton}
+                    onPress={() => {
+                        setSelectedId(item.id);
+                        setRestaurantSelectedId(item.restaurant.id);
+                        handleModalRatings();
+                    }}
+                >
+                    <Text style={styles.textCancelBtn}>Rate it!</Text>
+                </Pressable>
+            );
+        } else {
+            return (
+                <Pressable
+                    hide={verifyDate(item.dateOfReservation, item.gap) !== true}
+                    style={styles.cancelbutton}
+                    onPress={() => {
+                        setSelectedId(item.id);
+                        handleModal();
+                    }}
+                >
+                    <Text style={styles.textCancelBtn}>Cancel</Text>
+                    <Text style={styles.textCancelBtn}>Reservation</Text>
+                </Pressable>
+            );
+        }
+    }
+
+    const renderItem = ({item}) => (
         <Card style={styles.card}>
             <Card.Title
                 title={item.restaurant.name}
                 subtitle={`Reservation date : ${item.dateOfReservation}`}
 
             />
-            <Divider />
-            <Card.Content style={{ display: 'flex' }}>
-                <View style={{ flexDirection: 'row' }}>
-                    <View style={{ width: '70%' }}>
-                        <div style={{ marginTop: "3%" }}>{"Reservation interval →" + item.gap}</div>
-                        <div style={{ marginTop: "3%" }}>{"Number of seats → " + item.noOfSeats}</div>
+            <Divider/>
+            <Card.Content style={{display: 'flex'}}>
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{width: '70%'}}>
+                        <div style={{marginTop: "3%"}}>{"Reservation interval →" + item.gap}</div>
+                        <div style={{marginTop: "3%"}}>{"Number of seats → " + item.noOfSeats}</div>
                     </View>
                     <View>
-                        <Card.Actions >
-                            <Pressable disabled={verifyDate(item.dateOfReservation, item.gap) === true ? false : true} style={verifyDate(item.dateOfReservation, item.gap) === true ? styles.cancelbutton : styles.cancelbuttonDisabled} onPress={() => { setSelectedId(item.id); handleModal() }}>
-                                <Text style={styles.textCancelBtn}>Cancel</Text>
-                                <Text style={styles.textCancelBtn}>Reservation</Text>
-                            </Pressable>
+                        <Card.Actions>
+                            {
+                                renderButton({item})
+                            }
                         </Card.Actions>
                     </View>
                 </View>
             </Card.Content>
         </Card>
-
     );
 
+    function onChangeText(text) {
+        setRatingText(text);
+    }
+
     return (
+
         <View style={styles.container}>
-            <MyModal isVisible={isModalVisible === undefined ? false : isModalVisible === true ? true : false}>
+            <MyModal isVisible={isModalVisible === undefined ? false : isModalVisible === true}>
                 <MyModal.Container>
-                    <MyModal.Header title="You're just one step away!" />
+                    <MyModal.Header title="You're just one step away!"/>
                     <MyModal.Body>
                         <Text style={styles.text}>Are you sure you want to cancel your reservation?</Text>
                     </MyModal.Body>
                     <MyModal.Footer>
                         <Pressable style={styles.modalbtn} onPress={handleCancel}>
-                            <Text style={styles.textCancelBtn}>     Yes     </Text>
+                            <Text style={styles.textCancelBtn}> Yes </Text>
                         </Pressable>
                         <Pressable style={styles.modalbtn} onPress={handleModal}>
-                            <Text style={styles.textCancelBtn}>     No      </Text>
+                            <Text style={styles.textCancelBtn}> No </Text>
                         </Pressable>
                     </MyModal.Footer>
                 </MyModal.Container>
             </MyModal>
+
+            <MyModal isVisible={isModalRatingsVisible === undefined ? false : isModalRatingsVisible === true}>
+                <MyModal.Container>
+                    <MyModal.Header title="Rate your experience!"/>
+                    <MyModal.Body>
+                        <StarRating
+                            maxStars={5}
+                            rating={rating}
+                            onChange={setRating}
+                        />
+
+                        <TextInput
+                            editable
+                            multiline
+                            placeholder={"Write something about your experience"}
+                            numberOfLines={4}
+                            maxLength={40}
+                            onChangeText={text => onChangeText(text)}
+                            value={ratingText}
+                            style={{padding: 10}}
+                        />
+                    </MyModal.Body>
+                    <MyModal.Footer>
+                        <Pressable style={styles.modalbtn} onPress={handleAddReview}>
+                            <Text style={styles.textCancelBtn}> Submit </Text>
+                        </Pressable>
+                    </MyModal.Footer>
+                </MyModal.Container>
+            </MyModal>
+
             <FlatList
                 data={reservations}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
             />
-        </View>);
+        </View>
+    );
 }

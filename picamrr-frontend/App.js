@@ -12,6 +12,7 @@ import Login from "./components/login/login";
 import ViewReservations from './components/viewReservations';
 import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ReviewsPage from "./components/ReviewsPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,7 @@ export default function App() {
                 <Stack.Screen name="Reservations" component={ViewReservations} />
                 <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen name="ReservationForm" component={ReservationForm} />
+                <Stack.Screen name="ReviewsPage" component={ReviewsPage} />
             </Stack.Navigator>
         </NavigationContainer>
     );

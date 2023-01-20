@@ -75,6 +75,7 @@ export default function ReservationForm({navigation, route}) {
                 toast.error(response.message, { position: "bottom-center" });
             }
         })
+        navigation.goBack();
     }
 
     return (
@@ -152,10 +153,7 @@ export default function ReservationForm({navigation, route}) {
                 <Button
                     color='purple'
                     title={"Book Now"}
-                    onPress={() => {
-                        bookReservation();
-                        navigation.goBack();
-                    }}
+                    onPress={bookReservation}
                 />
             </View>
         </View>
