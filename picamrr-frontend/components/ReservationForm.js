@@ -13,7 +13,7 @@ import {toast} from "react-hot-toast";
 
 export default function ReservationForm({navigation, route}) {
     const [open, setOpen] = useState(false);
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(new Date('2023-01-13'));
     const [value, setValue] = useState([]);
     const [spinnerValue, setSpinnerValue] = useState(1);
     const [items, setItems] = useState(getItems(route.params.availableSeatsPerInterval));
@@ -117,7 +117,7 @@ export default function ReservationForm({navigation, route}) {
                             onPress={() => showDatePicker()}
                         />
                     }
-                    value={date.toLocaleString()}
+                    value={date.toDateString()}
                     editable={false}
                 />
                 <DateTimePickerModal

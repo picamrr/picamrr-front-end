@@ -65,7 +65,7 @@ export default function Home({ navigation, route }) {
                 <Card.Title titleStyle={styles.title} subtitleStyle={styles.subtitle}
                             title = {item.name}
                             subtitle ={item.stars + "⭐"} />
-                <Card.Cover source={ {uri:`data:image/jpeg;base64,${item.image}`}} />
+                <Card.Cover source={ {uri:`data:image/jpeg;base64,${item.image.trim()}`}} />
                 <Card.Content>
                     <Title style={styles.address_phone}>{"📍" + item.address}</Title>
                     <Title style={styles.address_phone}>{"📞" + item.phoneNumber}</Title>
